@@ -1,2 +1,5 @@
 scikit-learn
 nltk
+streamlit
+PyPDF2
+pandas
