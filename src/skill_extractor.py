@@ -1,6 +1,5 @@
 import re
 
-# predefined skill list (you can expand)
 SKILLS_DB = [
     "python", "java", "sql", "machine learning", "data structures",
     "algorithms", "c++", "javascript", "react", "nodejs",

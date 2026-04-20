@@ -10,7 +10,6 @@ def compute_similarity(text1, text2):
 
 def rank_resumes(job_desc, resumes):
 
-    # Try different weight combinations (optimization)
     weight_options = [
         (0.5, 0.3, 0.2),
         (0.6, 0.3, 0.1),

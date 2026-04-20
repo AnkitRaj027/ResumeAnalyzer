@@ -76,7 +76,7 @@ if st.button("🔥 Rank Resumes"):
 
         st.subheader("🏆 Ranking Results")
 
-        # Convert to DataFrame
+        
         data = []
         for rank, (i, score) in enumerate(results):
             data.append({
@@ -88,14 +88,14 @@ if st.button("🔥 Rank Resumes"):
 
         df = pd.DataFrame(data)
 
-        # 🌟 Highlight top candidate
+        
         st.success(f"🥇 Top Candidate: {df.iloc[0]['Name']}")
 
-        # 📊 Bar chart
+       
         st.subheader("📊 Score Visualization")
         st.bar_chart(df.set_index("Name")["Score"])
 
-        # 🎴 Cards UI
+        
         st.subheader("📄 Resume Details")
 
         for _, row in df.iterrows():
