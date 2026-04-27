@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+data/feedback_log.jsonl
+data/learning_state.json
+.vscode/
+.idea/
+venv/
+env/
+.env
+.DS_Store
