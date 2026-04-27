@@ -45,27 +45,74 @@ st.markdown("""
         --accent: #8b5cf6;
         --bg: #0f172a;
         --sidebar-bg: #0b0f1a;
-        --card-bg: rgba(30, 41, 59, 0.7);
+        --card-bg: rgba(30, 41, 59, 0.4);
+    }
+
+    /* Neural Pulse Background */
+    .stApp {
+        background: #0f172a;
+        background-image: 
+            radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+            radial-gradient(at 100% 0%, rgba(6, 182, 212, 0.15) 0px, transparent 50%),
+            radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.15) 0px, transparent 50%),
+            radial-gradient(at 0% 100%, rgba(236, 72, 153, 0.15) 0px, transparent 50%),
+            linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+        color: #f8fafc;
+        overflow-x: hidden;
+    }
+
+    /* Floating Glass Orbs */
+    .stApp::before {
+        content: "";
+        position: fixed;
+        top: -10%; left: -10%;
+        width: 40%; height: 40%;
+        background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+        animation: drift 25s infinite alternate ease-in-out;
+        z-index: -1;
+    }
+
+    .stApp::after {
+        content: "";
+        position: fixed;
+        bottom: -10%; right: -10%;
+        width: 50%; height: 50%;
+        background: radial-gradient(circle, rgba(6, 182, 212, 0.1) 0%, transparent 70%);
+        animation: drift 30s infinite alternate-reverse ease-in-out;
+        z-index: -1;
+    }
+
+    @keyframes drift {
+        from { transform: translate(0, 0) rotate(0deg); }
+        to { transform: translate(20%, 15%) rotate(20deg); }
     }
 
     html, body, [class*="css"] { font-family: 'Plus Jakarta Sans', sans-serif; }
-    .stApp { background: radial-gradient(circle at 30% 30%, #1e1b4b 0%, #0f172a 100%); color: #f8fafc; }
 
-    /* Sidebar Ultra Polish */
-    [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #0b0f1a 0%, #0f172a 100%) !important;
-        border-right: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
+    /* Glassmorphism Cards */
     .glass-card {
         background: var(--card-bg);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
         border: 1px solid rgba(255, 255, 255, 0.08);
         border-radius: 28px;
         padding: 32px;
         margin-bottom: 24px;
-        box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s ease, border 0.3s ease;
+        animation: fadeIn 0.8s ease-out;
+    }
+    
+    .glass-card:hover {
+        transform: translateY(-5px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 
     .main-header {
@@ -77,6 +124,12 @@ st.markdown("""
         -webkit-text-fill-color: transparent;
         line-height: 1.0;
         margin-bottom: 10px;
+        animation: titleSlide 1s ease-out;
+    }
+
+    @keyframes titleSlide {
+        from { opacity: 0; transform: translateX(-30px); }
+        to { opacity: 1; transform: translateX(0); }
     }
 
     /* Badges */
@@ -99,6 +152,69 @@ st.markdown("""
     .verdict-med { background: #f59e0b; color: #fff; }
     .verdict-low { background: #ef4444; color: #fff; }
 
+    /* Top Neural Link Bar */
+    .top-nav {
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        height: 32px;
+        background: rgba(11, 15, 26, 0.6);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 30px;
+        font-size: 0.6rem;
+        letter-spacing: 0.12em;
+        color: #94a3b8;
+    }
+    .status-dot { width: 5px; height: 5px; background: #10b981; border-radius: 50%; display: inline-block; margin-right: 8px; box-shadow: 0 0 8px #10b981; }
+
+    /* Sidebar Modular Sections with Neon Animation */
+    .sidebar-section {
+        background: rgba(11, 15, 26, 0.6);
+        border-radius: 20px;
+        padding: 20px;
+        margin-bottom: 20px;
+        border: 1px solid rgba(99, 102, 241, 0.2);
+        position: relative;
+        overflow: hidden;
+        transition: all 0.4s ease;
+    }
+    .sidebar-section:hover {
+        border-color: var(--primary);
+        box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+    }
+    
+    /* Animated Neon Border Pulse */
+    @keyframes borderPulse {
+        0% { border-color: rgba(99, 102, 241, 0.2); }
+        50% { border-color: var(--secondary); }
+        100% { border-color: rgba(99, 102, 241, 0.2); }
+    }
+    .sidebar-section { animation: borderPulse 4s infinite ease-in-out; }
+
+    /* Animated Sidebar Background */
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #0b0f1a 0%, #1e1b4b 50%, #0f172a 100%) !important;
+        background-size: 100% 200%;
+        animation: gradientMove 10s infinite alternate linear;
+    }
+    @keyframes gradientMove {
+        0% { background-position: 0% 0%; }
+        100% { background-position: 0% 100%; }
+    }
+
+    /* Pulsing Text */
+    .pulse-text {
+        animation: textGlow 2s infinite alternate;
+    }
+    @keyframes textGlow {
+        from { text-shadow: 0 0 5px rgba(99, 102, 241, 0.2); }
+        to { text-shadow: 0 0 15px rgba(99, 102, 241, 0.6); color: #fff; }
+    }
+
     /* Interview Cards */
     .interview-card {
         background: rgba(255, 255, 255, 0.02);
@@ -115,6 +231,10 @@ st.markdown("""
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
 </style>
+<div class="top-nav">
+    <div><span class="status-dot"></span>NEURAL LINK ACTIVE • PLATINUM ENGINE v3.2.0</div>
+    <div>LATENCY: 18ms • LOAD: 0.12 • CORE: SBERT-MINILM</div>
+</div>
 """, unsafe_allow_html=True)
 
 # ── Session State ────────────────────────────────────────────────────────────
@@ -125,48 +245,46 @@ if 'file_meta' not in st.session_state: st.session_state.file_meta = None
 # ── Sidebar UI ───────────────────────────────────────────────────────────────
 
 with st.sidebar:
-    st.markdown("<div style='text-align:center; padding-bottom:1rem;'><img src='https://cdn-icons-png.flaticon.com/512/2936/2936630.png' width='60' style='filter: drop-shadow(0 0 10px rgba(99,102,241,0.5));'><h3 style='font-weight:800; color:white; margin-top:10px;'>INTEL HUB</h3></div>", unsafe_allow_html=True)
+    st.markdown("<div style='text-align:center; padding: 2rem 0;'><img src='https://cdn-icons-png.flaticon.com/512/2936/2936630.png' width='85' style='filter: drop-shadow(0 0 20px rgba(99,102,241,0.8)); animation: pulse 3s infinite;'><h1 class='pulse-text' style='font-weight:800; color:white; margin-top:15px; letter-spacing:-0.03em; font-size:1.8rem;'>INTEL CORE</h1><p style='color:#6366f1; font-size:0.75rem; letter-spacing:0.3em; font-weight:700;'>v3.2 PLATINUM</p></div>", unsafe_allow_html=True)
     
-    st.divider()
-    st.markdown('<p style="font-size:0.7rem; font-weight:800; color:#64748b; letter-spacing:0.15em; margin-bottom:1rem;">NEURAL CALIBRATION</p>', unsafe_allow_html=True)
+    st.markdown('<div class="sidebar-section">', unsafe_allow_html=True)
+    st.markdown('<p style="font-size:0.7rem; font-weight:800; color:#6366f1; letter-spacing:0.15em; margin-bottom:1rem;">⚡ NEURAL CALIBRATION</p>', unsafe_allow_html=True)
     
-    auto_learn = st.toggle("🤖 Autonomous Learning Mode", value=True, help="When enabled, the system learns from your Hire/Reject decisions to automatically optimize weights.")
+    auto_learn = st.toggle("🤖 Autonomous Learning", value=True)
     
     if auto_learn:
         learned_weights = learner.train_on_feedback()
-        st.info("System is using AI-optimized weights based on your historical behavior.")
-        w_skills = learned_weights["skills"]
-        w_exp = learned_weights["experience"]
-        w_edu = learned_weights["education"]
-        w_train = learned_weights["training"]
-        
-        # Display current learned weights (read-only)
-        st.caption(f"Skills: {w_skills:.2f} | Exp: {w_exp:.2f} | Edu: {w_edu:.2f} | Train: {w_train:.2f}")
+        st.markdown(f"""
+            <div style='font-size:0.7rem; color:#fff; line-height:1.6; background:linear-gradient(135deg, rgba(99,102,241,0.2), rgba(6,182,212,0.2)); padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.3);'>
+                <div style='color:#64748b; font-size:0.6rem; font-weight:800; margin-bottom:5px;'>LIVE AI WEIGHTS</div>
+                SKILLS: {learned_weights['skills']:.2f}<br>
+                EXPERIENCE: {learned_weights['experience']:.2f}<br>
+                EDUCATION: {learned_weights['education']:.2f}
+            </div>
+        """, unsafe_allow_html=True)
+        w_skills, w_exp, w_edu = list(learned_weights.values())[:3]
     else:
-        w_skills = st.slider("Technical Skill Precision", 0.0, 1.0, 0.50)
-        w_exp = st.slider("Experience Density", 0.0, 1.0, 0.25)
-        w_edu = st.slider("Educational Alignment", 0.0, 1.0, 0.15)
-        w_train = st.slider("Certification Intensity", 0.0, 1.0, 0.10)
+        w_skills = st.slider("Technical Fit", 0.0, 1.0, 0.60)
+        w_exp = st.slider("Experience", 0.0, 1.0, 0.30)
+        w_edu = st.slider("Education", 0.0, 1.0, 0.10)
+        w_train = 0
     
-    total_w = w_skills + w_exp + w_edu + w_train
-    norm_weights = {
-        "skills": w_skills/total_w, 
-        "experience": w_exp/total_w, 
-        "education": w_edu/total_w,
-        "training": w_train/total_w
-    }
+    total_w = max(0.01, w_skills + w_exp + w_edu)
+    norm_weights = {"skills": w_skills/total_w, "experience": w_exp/total_w, "education": w_edu/total_w}
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    st.markdown('<div class="sidebar-section">', unsafe_allow_html=True)
+    st.markdown('<p style="font-size:0.7rem; font-weight:800; color:#06b6d4; letter-spacing:0.15em; margin-bottom:1rem;">🧬 SYSTEM ENGINE</p>', unsafe_allow_html=True)
+    anonymize = st.toggle("Privacy Mode", value=False)
+    auto_expand = st.toggle("Smart Expansion", value=True)
+    st.markdown('</div>', unsafe_allow_html=True)
     
-    st.divider()
-    st.markdown('<p style="font-size:0.7rem; font-weight:800; color:#64748b; letter-spacing:0.15em; margin-bottom:1rem;">SYSTEM PREFERENCES</p>', unsafe_allow_html=True)
-    anonymize = st.toggle("Candidate Privacy Mode", value=False)
-    auto_expand = st.toggle("Auto-Expand Analysis", value=True)
-    
-    st.divider()
-    if st.button("🗑️ Reset Neural Buffers", use_container_width=True):
+    if st.button("🔥 PURGE NEURAL BUFFERS", use_container_width=True):
         st.session_state.results = None
         st.session_state.file_meta = None
         st.rerun()
-    st.caption("Resume Intelligence v3.2.0 Platinum")
+    
+    st.markdown("<div style='margin-top:40px; font-size:0.65rem; color:#64748b; text-align:center; font-weight:700; letter-spacing:0.1em;'>POWERED BY RESUME INTELLIGENCE PLATINUM</div>", unsafe_allow_html=True)
 
 # ── Intelligence Helpers ────────────────────────────────────────────────────
 
@@ -275,8 +393,8 @@ if st.session_state.results:
     df = pd.DataFrame(rows)
 
     st.header("🏆 Talent Intelligence Hub")
-    tab_profiles, tab_visuals, tab_comparison, tab_gaps, tab_training, tab_interviewer, tab_raw = st.tabs([
-        "💎 Profiles", "📊 Visual Insights", "⚖️ Comparison", "🚩 Gap Analytics", "🎓 Training & Growth", "🎙️ Smart Interviewer", "📄 Raw Text"
+    tab_profiles, tab_visuals, tab_comparison, tab_gaps, tab_interviewer, tab_raw = st.tabs([
+        "💎 Profiles", "📊 Visual Insights", "⚖️ Comparison", "🚩 Gap Analytics", "🎙️ Smart Interviewer", "📄 Raw Text"
     ])
 
 
@@ -293,7 +411,6 @@ if st.session_state.results:
                     <div><h5 style="color:#94a3b8; margin-bottom:16px;">Core Alignment</h5><div style="display:flex; flex-direction:column; gap:16px;">
                             <div><p style="font-size:0.75rem; color:#64748b; margin-bottom:4px;">Technical Fit Index</p><div style="height:4px; background:rgba(255,255,255,0.05);"><div style="height:100%; width:{row['Skills']*100}%; background:#6366f1;"></div></div></div>
                             <div><p style="font-size:0.75rem; color:#64748b; margin-bottom:4px;">Experience Relevance</p><div style="height:4px; background:rgba(255,255,255,0.05);"><div style="height:100%; width:{row['Experience']*100}%; background:#06b6d4;"></div></div></div>
-                            <div><p style="font-size:0.75rem; color:#64748b; margin-bottom:4px;">Certification Intensity</p><div style="height:4px; background:rgba(255,255,255,0.05);"><div style="height:100%; width:{row['Training']*100}%; background:#8b5cf6;"></div></div></div>
                         </div></div>
                     <div><h5 style="color:#94a3b8; margin-bottom:16px;">Verified Technical DNA</h5>
                         {"".join([f'<span class="skill-badge matched-badge">{s}</span>' for s in row['SkillsList'][:15]])}
@@ -334,12 +451,12 @@ if st.session_state.results:
             top_df = df.head(top_n)
             
             fig_radar = go.Figure()
-            categories = ['Skills', 'Experience', 'Education', 'Training']
+            categories = ['Skills', 'Experience', 'Education']
             
-            colors = ['#6366f1', '#06b6d4', '#8b5cf6', '#ec4899']
+            colors = ['#6366f1', '#06b6d4', '#8b5cf6']
             for i, (idx, row) in enumerate(top_df.iterrows()):
                 fig_radar.add_trace(go.Scatterpolar(
-                    r=[row['Skills'], row['Experience'], row['Education'], row['Training']],
+                    r=[row['Skills'], row['Experience'], row['Education']],
                     theta=categories,
                     fill='toself',
                     name=row['Name'],
@@ -442,7 +559,6 @@ if st.session_state.results:
                             <p><b>Skills:</b> {r['Skills']:.2f}</p>
                             <p><b>Experience:</b> {r['Experience']:.2f}</p>
                             <p><b>Education:</b> {r['Education']:.2f}</p>
-                            <p><b>Training:</b> {r['Training']:.2f}</p>
                         </div>
                         """, unsafe_allow_html=True)
                         analysis = analyze_gaps_platinum(job_desc, r["Raw"])
@@ -477,38 +593,6 @@ if st.session_state.results:
                             st.markdown(f'<span class="skill-badge gap-partial" title="Relates to {item["covered_by"]} ({item["confidence"]:.2f})">{item["gap"]}</span>', unsafe_allow_html=True)
                     if not analysis["critical_gaps"] and not analysis["partial_matches"]:
                         st.success("Full technical alignment detected.")
-
-    with tab_training:
-        st.subheader("🎓 Upskilling & Growth Roadmap")
-        st.markdown("<p style='color:#64748b; margin-bottom:2rem;'>Personalized training recommendations to bridge critical skill gaps.</p>", unsafe_allow_html=True)
-        
-        for _, row in df.iterrows():
-            analysis = analyze_gaps_platinum(job_desc, row["Raw"])
-            with st.expander(f"Growth Strategy: {row['Name']}"):
-                col_t1, col_t2 = st.columns([1, 1])
-                
-                with col_t1:
-                    st.markdown("##### 📜 Existing Certifications")
-                    if row["TrainingSec"]:
-                        st.markdown(f'<div style="background:rgba(99,102,241,0.05); padding:15px; border-radius:12px; border:1px solid rgba(99,102,241,0.1); color:#94a3b8; font-size:0.9rem;">{row["TrainingSec"]}</div>', unsafe_allow_html=True)
-                    else:
-                        st.info("No explicit certifications detected in resume.")
-                
-                with col_t2:
-                    st.markdown("##### 🚀 Recommended Path")
-                    if analysis["critical_gaps"]:
-                        recs = get_recommendations(analysis["critical_gaps"])
-                        for rec in recs:
-                            st.markdown(f"**Skill: {rec['skill'].upper()}**")
-                            for course in rec["courses"]:
-                                st.markdown(f"""
-                                <div style="margin-bottom:10px; padding:10px; background:rgba(255,255,255,0.03); border-radius:8px;">
-                                    <div style="font-size:0.85rem; font-weight:600;">{course['title']}</div>
-                                    <div style="font-size:0.75rem; color:#64748b;">{course['platform']} • <a href="{course['link']}" target="_blank" style="color:#6366f1;">View Course</a></div>
-                                </div>
-                                """, unsafe_allow_html=True)
-                    else:
-                        st.success("Candidate is highly qualified. Consider advanced leadership or specialized architecture training.")
 
     with tab_interviewer:
         st.subheader("🎙️ Platinum Interview Intelligence Studio")
