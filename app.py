@@ -241,7 +241,12 @@ if st.button("🚀 EXECUTE NEURAL DISCOVERY", use_container_width=True):
                     skills_nlp = extract_skills_as_list(text)
                     combined_skills = f"{' '.join(skills_nlp)} | {exp or text} | {edu or text} | {training or text}"
                     resumes_data.append(combined_skills)
-                    file_meta.append({"name": file.name, "raw": text, "training_sec": training})
+                    file_meta.append({
+                        "name": file.name, 
+                        "raw": text, 
+                        "training_sec": training,
+                        "skills_list": skills_nlp
+                    })
                 st.session_state.results = rank_resumes(job_desc, resumes_data, weights=norm_weights)
                 st.session_state.file_meta = file_meta
                 st.balloons()
@@ -264,7 +269,8 @@ if st.session_state.results:
             "Education": breakdown.get("education", 0), 
             "Training": breakdown.get("training", 0),
             "Raw": st.session_state.file_meta[idx]["raw"],
-            "TrainingSec": st.session_state.file_meta[idx].get("training_sec", "")
+            "TrainingSec": st.session_state.file_meta[idx].get("training_sec", ""),
+            "SkillsList": st.session_state.file_meta[idx].get("skills_list", [])
         })
     df = pd.DataFrame(rows)
 
@@ -290,7 +296,7 @@ if st.session_state.results:
                             <div><p style="font-size:0.75rem; color:#64748b; margin-bottom:4px;">Certification Intensity</p><div style="height:4px; background:rgba(255,255,255,0.05);"><div style="height:100%; width:{row['Training']*100}%; background:#8b5cf6;"></div></div></div>
                         </div></div>
                     <div><h5 style="color:#94a3b8; margin-bottom:16px;">Verified Technical DNA</h5>
-                        {"".join([f'<span class="skill-badge matched-badge">{s}</span>' for s in extract_skills_as_list(row['Raw'])[:15]])}
+                        {"".join([f'<span class="skill-badge matched-badge">{s}</span>' for s in row['SkillsList'][:15]])}
                     </div>
                 </div>
                 """, unsafe_allow_html=True)
@@ -360,7 +366,7 @@ if st.session_state.results:
         st.markdown("<h3 style='margin-bottom:1.5rem;'>🛠️ Talent Pool Skill Distribution</h3>", unsafe_allow_html=True)
         all_skills = []
         for _, row in df.iterrows():
-            all_skills.extend(extract_skills_as_list(row['Raw']))
+            all_skills.extend(row['SkillsList'])
         
         if all_skills:
             skill_counts = pd.Series(all_skills).value_counts().head(12).reset_index()
