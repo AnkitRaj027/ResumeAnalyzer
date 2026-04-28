@@ -78,8 +78,7 @@ class AutonomousLearner:
             self.weights = {
                 "skills": float(norm_coeffs[0]),
                 "experience": float(norm_coeffs[1]),
-                "education": float(norm_coeffs[2]),
-                "training": float(norm_coeffs[3])
+                "education": float(norm_coeffs[2])
             }
             self.save_state()
         
