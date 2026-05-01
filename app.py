@@ -14,13 +14,13 @@ from src.analytics import analyze_gaps_platinum, get_verdict
 
 # UI Assets & Styles
 from src.ui_styles import get_custom_css, get_top_nav
-from src.ui_components import render_neural_canvas, render_radial_score, render_skill_badges, render_interview_card
+from src.ui_components import render_neural_canvas, render_radial_score, render_skill_badges
 
 # ── PAGE CONFIGURATION ────────────────────────────────────────────────────────
 
 st.set_page_config(
     page_title="Resume Intelligence AI | Platinum Edition",
-    page_icon="💎",
+    page_icon="⌛",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -47,11 +47,11 @@ with st.sidebar:
     if auto_learn:
         lw = learner.train_on_feedback()
         st.markdown(f"""
-            <div style='font-size:0.7rem; color:#fff; line-height:1.6; background:linear-gradient(135deg, rgba(99,102,241,0.2), rgba(6,182,212,0.2)); padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.3);'>
-                <div style='color:#64748b; font-size:0.6rem; font-weight:800; margin-bottom:5px;'>LIVE AI WEIGHTS</div>
-                SKILLS: {lw['skills']:.2f}<br>EXPERIENCE: {lw['experience']:.2f}<br>EDUCATION: {lw['education']:.2f}
-            </div>
-        """, unsafe_allow_html=True)
+<div style='font-size:0.7rem; color:#fff; line-height:1.6; background:linear-gradient(135deg, rgba(99,102,241,0.2), rgba(6,182,212,0.2)); padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.3);'>
+    <div style='color:#64748b; font-size:0.6rem; font-weight:800; margin-bottom:5px;'>LIVE AI WEIGHTS</div>
+    SKILLS: {lw['skills']:.2f}<br>EXPERIENCE: {lw['experience']:.2f}<br>EDUCATION: {lw['education']:.2f}
+</div>
+""", unsafe_allow_html=True)
         w_skills, w_exp, w_edu = lw['skills'], lw['experience'], lw['education']
     else:
         w_skills = st.slider("Technical Fit", 0.0, 1.0, 0.60)
@@ -129,28 +129,58 @@ if st.session_state.results:
     df = pd.DataFrame(rows)
 
     st.header("🏆 Talent Intelligence Hub")
-    tabs = st.tabs(["💎 Profiles", "📊 Visual Insights", "⚖️ Comparison", "🚩 Gap Analytics", "🎙️ Smart Interviewer", "📄 Raw Text"])
-    tab_profiles, tab_visuals, tab_comparison, tab_gaps, tab_interviewer, tab_raw = tabs
+    tabs = st.tabs(["💎 Profiles", "📊 Visual Insights", "⚖️ Comparison", "🧠 AI Insights", "📄 Raw Text"])
+    tab_profiles, tab_visuals, tab_comparison, tab_insights, tab_raw = tabs
 
     with tab_profiles:
         for i, row in df.iterrows():
             verdict, v_class = get_verdict(row['Score'])
             with st.expander(f"#{row['Rank']} {row['Name']} (Score: {row['Score']:.4f})", expanded=(i==0 and auto_expand)):
+                skills_html = render_skill_badges(row['SkillsList'], "matched") if row['SkillsList'] else '<span style="color:#64748b; font-size:0.8rem; font-style:italic;">No critical skills detected</span>'
                 st.markdown(f"""
-                <div style="display:flex; justify-content:space-between; margin-bottom:20px; align-items:center;">
-                    <div><span class="verdict-tag {v_class}">{verdict}</span></div>
-                    {render_radial_score(row['Score'])}
-                </div>
-                <div style="display:grid; grid-template-columns: 1fr 2fr; gap:32px;">
-                    <div><h5 style="color:#94a3b8; margin-bottom:16px;">Core Alignment</h5><div style="display:flex; flex-direction:column; gap:16px;">
-                            <div><p style="font-size:0.75rem; color:#64748b; margin-bottom:4px;">Technical Fit Index</p><div style="height:4px; background:rgba(255,255,255,0.05);"><div style="height:100%; width:{row['Skills']*100}%; background:#6366f1;"></div></div></div>
-                            <div><p style="font-size:0.75rem; color:#64748b; margin-bottom:4px;">Experience Relevance</p><div style="height:4px; background:rgba(255,255,255,0.05);"><div style="height:100%; width:{row['Experience']*100}%; background:#06b6d4;"></div></div></div>
-                        </div></div>
-                    <div><h5 style="color:#94a3b8; margin-bottom:16px;">Verified Technical DNA</h5>
-                        {render_skill_badges(row['SkillsList'][:15], "matched")}
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
+<div style="display:flex; gap: 24px; align-items:stretch; padding: 5px; flex-wrap:wrap;">
+<div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-width: 180px; flex: 1; max-width: 220px; background: rgba(255,255,255,0.02); padding: 25px 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); box-shadow: inset 0 0 20px rgba(0,0,0,0.2);">
+{render_radial_score(row['Score'])}
+<div style="margin-top: 25px; width: 100%; text-align: center;"><span class="verdict-tag {v_class}" style="display:inline-block; width:100%; padding: 8px 0; box-sizing: border-box;">{verdict}</span></div>
+</div>
+<div style="flex-grow: 1; flex-basis: 400px; display:flex; flex-direction:column; gap: 16px;">
+<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px;">
+<div style="background: rgba(255,255,255,0.02); padding: 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+<p style="font-size:0.7rem; color:#94a3b8; font-weight:700; margin-bottom:10px; letter-spacing:0.05em;">TECHNICAL FIT</p>
+<div style="height:6px; background:rgba(255,255,255,0.05); border-radius:3px; overflow:hidden;"><div style="height:100%; width:{row['Skills']*100}%; background:linear-gradient(90deg, #4f46e5, #6366f1); border-radius:3px;"></div></div>
+</div>
+<div style="background: rgba(255,255,255,0.02); padding: 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+<p style="font-size:0.7rem; color:#94a3b8; font-weight:700; margin-bottom:10px; letter-spacing:0.05em;">EXPERIENCE</p>
+<div style="height:6px; background:rgba(255,255,255,0.05); border-radius:3px; overflow:hidden;"><div style="height:100%; width:{row['Experience']*100}%; background:linear-gradient(90deg, #0891b2, #06b6d4); border-radius:3px;"></div></div>
+</div>
+<div style="background: rgba(255,255,255,0.02); padding: 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);">
+<p style="font-size:0.7rem; color:#94a3b8; font-weight:700; margin-bottom:10px; letter-spacing:0.05em;">EDUCATION</p>
+<div style="height:6px; background:rgba(255,255,255,0.05); border-radius:3px; overflow:hidden;"><div style="height:100%; width:{row['Education']*100}%; background:linear-gradient(90deg, #7c3aed, #8b5cf6); border-radius:3px;"></div></div>
+</div>
+</div>
+<div style="background: rgba(255,255,255,0.02); padding: 18px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); flex-grow: 1;">
+<p style="color:#e2e8f0; margin-bottom:14px; font-size:0.75rem; font-weight:700; letter-spacing:0.05em;">VERIFIED TECHNICAL DNA</p>
+<div style="display:flex; flex-wrap:wrap; gap:8px;">
+{skills_html}
+</div>
+</div>
+</div>
+</div>
+</div>
+""", unsafe_allow_html=True)
+
+                st.markdown("<div style='margin-top: 20px; margin-bottom: 5px;'><span style='font-size:0.7rem; font-weight:700; color:#94a3b8; letter-spacing:0.1em;'>🤖 TRAIN AUTONOMOUS LEARNER</span></div>", unsafe_allow_html=True)
+                fb_col1, fb_col2, _ = st.columns([1, 1, 4])
+                feat_dict = {"skills": row["Skills"], "experience": row["Experience"], "education": row["Education"], "training": 0.0}
+                
+                with fb_col1:
+                    if st.button("👍 Hire", key=f"hire_{i}", use_container_width=True):
+                        learner.log_feedback(job_desc, feat_dict, row["Score"], 1)
+                        st.toast("✅ Positive feedback logged! AI weights will update.")
+                with fb_col2:
+                    if st.button("👎 Reject", key=f"rej_{i}", use_container_width=True):
+                        learner.log_feedback(job_desc, feat_dict, row["Score"], 0)
+                        st.toast("🚫 Negative feedback logged! AI weights will update.")
 
     with tab_visuals:
         v_col1, v_col2 = st.columns([1.2, 1])
@@ -179,50 +209,74 @@ if st.session_state.results:
                 cc1, cc2 = st.columns(2)
                 for r, c in [(r1, cc1), (r2, cc2)]:
                     with c:
-                        st.markdown(f'<div class="glass-card" style="padding:20px;"><h4 style="color:#6366f1;">{r["Name"]}</h4><p style="font-size:1.5rem; font-weight:800;">{r["Score"]:.4f}</p><hr style="opacity:0.1"><p><b>Skills:</b> {r["Skills"]:.2f}</p><p><b>Experience:</b> {r["Experience"]:.2f}</p><p><b>Education:</b> {r["Education"]:.2f}</p></div>', unsafe_allow_html=True)
                         analysis = analyze_gaps_platinum(job_desc, r["Raw"])
-                        st.write("**Top Matches:**")
-                        st.markdown(render_skill_badges(analysis["matched_hard"][:8], "matched"), unsafe_allow_html=True)
+                        badges = render_skill_badges(analysis["matched_hard"][:8], "matched") if analysis["matched_hard"] else '<span style="color:#64748b; font-size:0.8rem; font-style:italic;">None detected</span>'
+                        st.markdown(f"""
+<div class="glass-card" style="padding:25px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); background: rgba(255,255,255,0.02); height: 100%;">
+<h3 style="color:#e2e8f0; margin-bottom: 5px; font-size: 1.1rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{r["Name"]}</h3>
+<div style="font-size: 2.2rem; font-weight: 900; background: linear-gradient(90deg, #6366f1, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 25px;">{(r['Score']*100):.1f}% MATCH</div>
+<div style="display:flex; flex-direction:column; gap:16px;">
+<div>
+<div style="display:flex; justify-content:space-between; font-size:0.75rem; color:#94a3b8; font-weight:700; margin-bottom:6px; letter-spacing: 0.05em;"><span>TECHNICAL FIT</span><span>{(r['Skills']*100):.0f}%</span></div>
+<div style="height:6px; background:rgba(255,255,255,0.05); border-radius:3px; overflow:hidden;"><div style="height:100%; width:{r['Skills']*100}%; background:linear-gradient(90deg, #4f46e5, #6366f1); border-radius:3px;"></div></div>
+</div>
+<div>
+<div style="display:flex; justify-content:space-between; font-size:0.75rem; color:#94a3b8; font-weight:700; margin-bottom:6px; letter-spacing: 0.05em;"><span>EXPERIENCE</span><span>{(r['Experience']*100):.0f}%</span></div>
+<div style="height:6px; background:rgba(255,255,255,0.05); border-radius:3px; overflow:hidden;"><div style="height:100%; width:{r['Experience']*100}%; background:linear-gradient(90deg, #0891b2, #06b6d4); border-radius:3px;"></div></div>
+</div>
+<div>
+<div style="display:flex; justify-content:space-between; font-size:0.75rem; color:#94a3b8; font-weight:700; margin-bottom:6px; letter-spacing: 0.05em;"><span>EDUCATION</span><span>{(r['Education']*100):.0f}%</span></div>
+<div style="height:6px; background:rgba(255,255,255,0.05); border-radius:3px; overflow:hidden;"><div style="height:100%; width:{r['Education']*100}%; background:linear-gradient(90deg, #7c3aed, #8b5cf6); border-radius:3px;"></div></div>
+</div>
+</div>
+<div style="margin-top:25px; padding-top:20px; border-top: 1px solid rgba(255,255,255,0.05);">
+<p style="font-size:0.7rem; color:#94a3b8; font-weight:700; letter-spacing:0.05em; margin-bottom:12px;">TOP TECHNICAL MATCHES</p>
+<div style="display:flex; flex-wrap:wrap; gap:6px;">
+{badges}
+</div>
+</div>
+</div>
+""", unsafe_allow_html=True)
 
-    with tab_gaps:
+    with tab_insights:
         for _, row in df.iterrows():
             analysis = analyze_gaps_platinum(job_desc, row["Raw"])
-            with st.expander(f"Gap Analysis: {row['Name']}"):
-                col_m, col_g = st.columns(2)
-                with col_m:
-                    st.markdown("##### ✅ Matched Skill Entities")
-                    st.markdown(render_skill_badges(analysis["matched_hard"], "matched"), unsafe_allow_html=True)
-                    if analysis["matched_soft"]:
-                        st.markdown("<p style='font-size:0.7rem; color:#64748b; margin-top:10px;'>SOFT SKILLS MATCHED</p>", unsafe_allow_html=True)
-                        st.markdown(render_skill_badges(analysis["matched_soft"], "soft"), unsafe_allow_html=True)
-                with col_g:
-                    st.markdown("##### 🚩 Analysis Gaps")
-                    if analysis["critical_gaps"]:
-                        st.markdown("<p style='font-size:0.7rem; color:#ef4444; font-weight:700;'>CRITICAL GAPS</p>", unsafe_allow_html=True)
-                        st.markdown(render_skill_badges(analysis["critical_gaps"], "critical"), unsafe_allow_html=True)
-                    if analysis["partial_matches"]:
-                        st.markdown("<p style='font-size:0.7rem; color:#f59e0b; font-weight:700; margin-top:15px;'>PARTIAL MATCHES</p>", unsafe_allow_html=True)
-                        st.markdown(render_skill_badges([item["gap"] for item in analysis["partial_matches"]], "partial"), unsafe_allow_html=True)
+            verdict, _ = get_verdict(row["Score"])
+            score_color = "#10b981" if row["Score"] > 0.6 else "#f59e0b" if row["Score"] > 0.35 else "#ef4444"
+            
+            matched_count = len(analysis["matched_hard"])
+            gap_count = len(analysis["critical_gaps"])
+            
+            if matched_count > gap_count * 1.5 and row["Score"] > 0.5:
+                summary_text = "This candidate demonstrates a strong alignment with the technical requirements. They possess core competencies in key areas, minimizing onboarding time. Highly recommended for technical deep-dive interviews."
+            elif matched_count > 0:
+                summary_text = f"This candidate shows partial alignment. While they bring {matched_count} verified technical skills to the table, there are noticeable gaps in the required stack that may necessitate initial training."
+            else:
+                summary_text = "This profile lacks strong evidence of the core technical requirements needed for this role. Proceed with caution."
+                
+            strengths = ", ".join([s.title() for s in analysis["matched_hard"][:6]]) if analysis["matched_hard"] else "No major technical strengths verified against requirements."
+            risks = ", ".join([s.title() for s in analysis["critical_gaps"][:6]]) if analysis["critical_gaps"] else "No critical technical gaps detected."
+            
+            st.markdown(f"""
+<div class="glass-card" style="padding: 25px; margin-bottom: 20px; border-left: 5px solid {score_color}; background: rgba(255,255,255,0.02); border-radius: 8px;">
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
+<h3 style="margin:0; color:#e2e8f0; font-size: 1.2rem;">{row['Name']}</h3>
+<span style="background: {score_color}15; color: {score_color}; padding: 6px 14px; border-radius: 20px; font-weight:800; font-size: 0.75rem; border: 1px solid {score_color}40; letter-spacing: 0.05em;">{verdict.upper()}</span>
+</div>
+<p style="color:#cbd5e1; font-size:0.9rem; line-height:1.6; margin-bottom:20px;"><strong>AI Engine Assessment:</strong> {summary_text}</p>
+<div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.05);">
+<div>
+<h5 style="color:#10b981; margin-bottom:10px; font-size:0.75rem; letter-spacing:0.05em;">💪 CORE STRENGTHS</h5>
+<p style="color:#94a3b8; font-size:0.85rem; line-height: 1.5;">{strengths}</p>
+</div>
+<div>
+<h5 style="color:#ef4444; margin-bottom:10px; font-size:0.75rem; letter-spacing:0.05em;">⚠️ IDENTIFIED RISKS</h5>
+<p style="color:#94a3b8; font-size:0.85rem; line-height: 1.5;">{risks}</p>
+</div>
+</div>
+</div>
+""", unsafe_allow_html=True)
 
-    with tab_interviewer:
-        for i, row in df.iterrows():
-            analysis = analyze_gaps_platinum(job_desc, row["Raw"])
-            with st.expander(f"Strategic Protocol: {row['Name']}"):
-                st.markdown("### 🧬 Phase 1: Technical DNA Validation")
-                q1, q2 = st.columns(2)
-                with q1:
-                    if analysis["critical_gaps"]: st.markdown(render_interview_card("CRITICAL", f"The role requires mastery of {analysis['critical_gaps'][0].upper()}. How have you handled transitions into new tech stacks?", "Ability to map concepts, self-learning speed.", "Generic answers."), unsafe_allow_html=True)
-                    else: st.markdown(render_interview_card("DEPTH", "You have a strong technical match. Can you describe the most difficult edge case you solved?", "Deep architectural understanding."), unsafe_allow_html=True)
-                with q2:
-                    if analysis["partial_matches"]: st.markdown(render_interview_card("SEMANTIC", f"We see your expertise in {analysis['partial_matches'][0]['covered_by'].upper()}. How would you translate those principles to our requirement for {analysis['partial_matches'][0]['gap'].upper()}?", "Conceptual agility."), unsafe_allow_html=True)
-                st.markdown("### 🎭 Phase 2: Situational Intelligence")
-                scenario = "scaling a high-traffic system" if "scale" in job_desc.lower() else "debugging a critical production issue"
-                st.markdown(render_interview_card("SCENARIO", f"Scenario: You are tasked with {scenario}. Walk us through your thought process.", "Systems thinking, awareness of trade-offs."), unsafe_allow_html=True)
-                st.markdown("### 📝 Scorecard")
-                s1, s2, s3 = st.columns(3)
-                s1.select_slider(f"Technical: {row['Name']}", ["Low", "Med", "High", "Expert"], key=f"s1_{row['Name']}_{i}")
-                s2.select_slider(f"Comm: {row['Name']}", ["Low", "Med", "High", "Expert"], key=f"s2_{row['Name']}_{i}")
-                s3.select_slider(f"Fit: {row['Name']}", ["Low", "Med", "High", "Expert"], key=f"s3_{row['Name']}_{i}")
 
     with tab_raw:
         for _, row in df.iterrows():

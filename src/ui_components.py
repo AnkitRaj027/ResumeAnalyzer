@@ -62,11 +62,7 @@ def render_neural_canvas():
     """, height=0)
 
 def render_radial_score(score):
-    return f"""
-    <div class="radial-score" style="--percentage: {score*360}deg;">
-        <span class="score-text">{(score*100):.1f}%</span>
-    </div>
-    """
+    return f'<div class="radial-score" style="--percentage: {score*360}deg;"><span class="score-text">{(score*100):.1f}%</span></div>'
 
 def render_skill_badges(skills, type="matched"):
     class_map = {
@@ -78,24 +74,3 @@ def render_skill_badges(skills, type="matched"):
     badges = "".join([f'<span class="skill-badge {class_map.get(type)}">{s}</span>' for s in skills])
     return badges
 
-def render_interview_card(type, question, hints, red_flags=None):
-    colors = {
-        "CRITICAL": "#6366f1",
-        "DEPTH": "#10b981",
-        "SEMANTIC": "#f59e0b",
-        "SCENARIO": "#8b5cf6",
-        "BEHAVIORAL": "#ec4899",
-        "LEARNING": "#06b6d4"
-    }
-    border_color = colors.get(type, "#6366f1")
-    
-    html = f"""
-    <div class="interview-card" style="border-left-color: {border_color};">
-        <p style="font-size:0.7rem; color:{border_color}; font-weight:800; letter-spacing:0.1em; margin-bottom:8px;">{type} PROBE</p>
-        <p style="font-weight:600;">"{question}"</p>
-        <div class="hint-box">✅ LOOK FOR: {hints}</div>
-    """
-    if red_flags:
-        html += f'<div class="warning-box">🚩 RED FLAG: {red_flags}</div>'
-    html += "</div>"
-    return html
